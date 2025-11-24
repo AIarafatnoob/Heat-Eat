@@ -61,7 +61,7 @@ const quickItems: MenuItem[] = [
   },
   {
     id: '4',
-    name: 'Chicken Boll',
+    name: 'Chicken Roll',
     image: chickenBollImg,
     prices: [
       { label: '8 pcs', pieces: 8, price: 300 },

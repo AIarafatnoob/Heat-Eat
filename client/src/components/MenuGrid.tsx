@@ -71,7 +71,7 @@ const menuItems: MenuItem[] = [
   },
   {
     id: '4',
-    name: 'Chicken Boll',
+    name: 'Chicken Roll',
     image: chickenBollImg,
     prices: [
       { label: '8 pcs', pieces: 8, price: 300 },
@@ -81,7 +81,7 @@ const menuItems: MenuItem[] = [
     protein: 20,
     carbs: 28,
     fats: 13,
-    description: 'Savory chicken balls with special spices',
+    description: 'Crispy chicken roll with aromatic spices',
   },
   {
     id: '5',
