@@ -1,14 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Phone } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const prevScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 100);
+      const currentScrollY = window.scrollY;
+      
+      // Check if scrolling up
+      if (currentScrollY < prevScrollY.current) {
+        setIsScrollingUp(true);
+      } else {
+        setIsScrollingUp(false);
+      }
+      
+      prevScrollY.current = currentScrollY;
+      setScrolled(currentScrollY > 100);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -47,10 +59,10 @@ export default function Navigation() {
           {/* Mobile buttons - vertical stack in top right */}
           <div
             className={`md:hidden flex flex-col gap-2 transition-all duration-300 transform ${
-              !scrolled ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
+              isScrollingUp || !scrolled ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
             }`}
             style={{
-              marginTop: !scrolled ? '20px' : '0px',
+              marginTop: (isScrollingUp || !scrolled) ? '20px' : '0px',
             }}
           >
             <Button
