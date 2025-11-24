@@ -58,6 +58,18 @@ export default function Home() {
     setOrderItems(prevItems => prevItems.filter((_, i) => i !== index));
   };
 
+  const handleUpdateQuantity = (index: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      handleRemoveItem(index);
+      return;
+    }
+    setOrderItems(prevItems => 
+      prevItems.map((item, i) => 
+        i === index ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
   // Extract quick select items (IDs 1-4) for nutrition display
   const quickSelectItems = orderItems.filter(item => {
     const itemId = parseInt(item.item.id);
@@ -74,7 +86,7 @@ export default function Home() {
       <MenuGrid onOrderUpdate={handleMenuUpdate} />
       <ContactSection />
       <Footer />
-      <OrderFloatingButton items={orderItems} onClearCart={handleClearCart} onRemoveItem={handleRemoveItem} />
+      <OrderFloatingButton items={orderItems} onClearCart={handleClearCart} onRemoveItem={handleRemoveItem} onUpdateQuantity={handleUpdateQuantity} />
     </div>
   );
 }

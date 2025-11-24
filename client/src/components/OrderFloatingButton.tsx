@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SiWhatsapp } from 'react-icons/si';
-import { ShoppingCart, X } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,7 @@ interface OrderItem {
   quantity: number;
 }
 
-export default function OrderFloatingButton({ items, onClearCart, onRemoveItem }: { items: OrderItem[]; onClearCart?: () => void; onRemoveItem?: (index: number) => void }) {
+export default function OrderFloatingButton({ items, onClearCart, onRemoveItem, onUpdateQuantity }: { items: OrderItem[]; onClearCart?: () => void; onRemoveItem?: (index: number) => void; onUpdateQuantity?: (index: number, quantity: number) => void }) {
   const [open, setOpen] = useState(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -98,23 +98,46 @@ export default function OrderFloatingButton({ items, onClearCart, onRemoveItem }
                   const price = priceOption?.price || 0;
                   const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
-                    <div key={index} className="flex justify-between items-start pb-3 border-b gap-2" data-testid={`order-item-${index}`}>
-                      <div className="flex-1">
+                    <div key={index} className="flex items-center justify-between pb-3 border-b gap-2" data-testid={`order-item-${index}`}>
+                      <div className="flex-1 min-w-0">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {label} • Qty: {orderItem.quantity}
+                          {label}
                         </p>
                       </div>
-                      <p className="font-semibold">৳{price * orderItem.quantity}</p>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-6 w-6 flex-shrink-0"
-                        onClick={() => onRemoveItem?.(index)}
-                        data-testid={`button-remove-item-${index}`}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <p className="font-semibold text-sm">৳{price * orderItem.quantity}</p>
+                        <div className="flex items-center gap-1 bg-muted rounded px-2 py-1">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5"
+                            onClick={() => onUpdateQuantity?.(index, orderItem.quantity - 1)}
+                            data-testid={`button-decrease-qty-${index}`}
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-5 text-center text-xs font-semibold">{orderItem.quantity}</span>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5"
+                            onClick={() => onUpdateQuantity?.(index, orderItem.quantity + 1)}
+                            data-testid={`button-increase-qty-${index}`}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6 flex-shrink-0"
+                          onClick={() => onRemoveItem?.(index)}
+                          data-testid={`button-remove-item-${index}`}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   );
                 })}
@@ -200,23 +223,46 @@ export default function OrderFloatingButton({ items, onClearCart, onRemoveItem }
                   const price = priceOption?.price || 0;
                   const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
-                    <div key={index} className="flex justify-between items-start pb-3 border-b gap-2">
-                      <div className="flex-1">
+                    <div key={index} className="flex items-center justify-between pb-3 border-b gap-2">
+                      <div className="flex-1 min-w-0">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {label} • Qty: {orderItem.quantity}
+                          {label}
                         </p>
                       </div>
-                      <p className="font-semibold">৳{price * orderItem.quantity}</p>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-6 w-6 flex-shrink-0"
-                        onClick={() => onRemoveItem?.(index)}
-                        data-testid={`button-remove-item-mobile-${index}`}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <p className="font-semibold text-sm">৳{price * orderItem.quantity}</p>
+                        <div className="flex items-center gap-1 bg-muted rounded px-2 py-1">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5"
+                            onClick={() => onUpdateQuantity?.(index, orderItem.quantity - 1)}
+                            data-testid={`button-decrease-qty-mobile-${index}`}
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-5 text-center text-xs font-semibold">{orderItem.quantity}</span>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-5 w-5"
+                            onClick={() => onUpdateQuantity?.(index, orderItem.quantity + 1)}
+                            data-testid={`button-increase-qty-mobile-${index}`}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6 flex-shrink-0"
+                          onClick={() => onRemoveItem?.(index)}
+                          data-testid={`button-remove-item-mobile-${index}`}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   );
                 })}
