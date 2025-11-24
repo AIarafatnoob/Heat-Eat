@@ -17,7 +17,7 @@ export default function Logo() {
     <div
       className="fixed z-30 transition-all duration-300"
       style={{
-        top: scrolled ? '0.75rem' : '2.5rem',
+        top: scrolled ? '0.75rem' : '1.5rem',
         left: scrolled ? '1.5rem' : '50%',
         transform: scrolled ? 'translateX(0)' : 'translateX(-50%)',
         width: scrolled ? '50px' : '120px',

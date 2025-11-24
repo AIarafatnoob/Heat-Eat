@@ -49,6 +49,9 @@ export default function Navigation() {
             className={`md:hidden flex flex-col gap-2 transition-all duration-300 transform ${
               !scrolled ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
             }`}
+            style={{
+              marginTop: !scrolled ? '10px' : '0px',
+            }}
           >
             <Button
               size="icon"
