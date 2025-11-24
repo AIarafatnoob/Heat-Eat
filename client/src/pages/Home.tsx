@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Navigation from '@/components/Navigation';
+import Logo from '@/components/Logo';
 import HeroSection from '@/components/HeroSection';
 import QuickSelectCarousel from '@/components/QuickSelectCarousel';
 import NutritionBar from '@/components/NutritionBar';
@@ -62,6 +63,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <Navigation />
+      <Logo />
       <HeroSection />
       <QuickSelectCarousel onOrderUpdate={handleQuickSelectUpdate} />
       <NutritionBar items={quickSelectItems} />
