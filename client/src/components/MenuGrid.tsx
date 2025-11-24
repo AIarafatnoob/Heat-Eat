@@ -239,16 +239,16 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                   <p className="text-muted-foreground text-sm mb-4">{item.description}</p>
 
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge className="text-xs">
+                    <Badge variant="outline" className="text-xs">
                       {item.calories} cal
                     </Badge>
-                    <Badge className="text-xs">
+                    <Badge variant="outline" className="text-xs">
                       {item.protein}g protein
                     </Badge>
-                    <Badge className="text-xs">
+                    <Badge variant="outline" className="text-xs">
                       {item.carbs}g carbs
                     </Badge>
-                    <Badge className="text-xs">
+                    <Badge variant="outline" className="text-xs">
                       {item.fats}g fats
                     </Badge>
                   </div>
@@ -276,7 +276,7 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                               <>
                                 <Button
                                   size="icon"
-                                  variant="secondary"
+                                  variant="outline"
                                   className="h-7 w-7"
                                   onClick={() => removeFromOrder(item, priceOption.pieces)}
                                   data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
