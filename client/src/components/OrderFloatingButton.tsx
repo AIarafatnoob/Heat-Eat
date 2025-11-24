@@ -113,7 +113,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
 
               <div className="flex gap-2">
                 <Button
-                  className="flex-1 text-xs bg-muted hover:bg-muted/80"
+                  className="flex-1 text-xs bg-muted hover:bg-muted/80 text-foreground"
                   onClick={() => {
                     onClearCart?.();
                     setOpen(false);
@@ -206,7 +206,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
 
               <div className="flex gap-2">
                 <Button
-                  className="flex-1 text-xs bg-muted hover:bg-muted/80"
+                  className="flex-1 text-xs bg-muted hover:bg-muted/80 text-foreground"
                   onClick={() => {
                     onClearCart?.();
                     setOpen(false);
