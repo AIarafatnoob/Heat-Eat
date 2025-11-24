@@ -60,12 +60,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
       message += `   Qty: ${orderItem.quantity} × ৳${price} = ৳${price * orderItem.quantity}\n\n`;
     });
 
-    message += `💰 *Total: ৳${totalPrice}*\n\n`;
-    message += `📊 *Nutritional Summary:*\n`;
-    message += `• Calories: ${Math.round(totalNutrition.calories)}\n`;
-    message += `• Protein: ${Math.round(totalNutrition.protein)}g\n`;
-    message += `• Carbs: ${Math.round(totalNutrition.carbs)}g\n`;
-    message += `• Fats: ${Math.round(totalNutrition.fats)}g`;
+    message += `💰 *Total: ৳${totalPrice}*`;
 
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/8801936135709?text=${encoded}`, '_blank');
