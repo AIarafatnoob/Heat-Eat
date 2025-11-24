@@ -50,7 +50,7 @@ export default function Navigation() {
               !scrolled ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
             }`}
             style={{
-              marginTop: !scrolled ? '10px' : '0px',
+              marginTop: !scrolled ? '20px' : '0px',
             }}
           >
             <Button
