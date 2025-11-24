@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SiWhatsapp } from 'react-icons/si';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,7 @@ interface OrderItem {
   quantity: number;
 }
 
-export default function OrderFloatingButton({ items, onClearCart }: { items: OrderItem[]; onClearCart?: () => void }) {
+export default function OrderFloatingButton({ items, onClearCart, onRemoveItem }: { items: OrderItem[]; onClearCart?: () => void; onRemoveItem?: (index: number) => void }) {
   const [open, setOpen] = useState(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -98,7 +98,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
                   const price = priceOption?.price || 0;
                   const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
-                    <div key={index} className="flex justify-between items-start pb-3 border-b" data-testid={`order-item-${index}`}>
+                    <div key={index} className="flex justify-between items-start pb-3 border-b gap-2" data-testid={`order-item-${index}`}>
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
@@ -106,6 +106,15 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 flex-shrink-0"
+                        onClick={() => onRemoveItem?.(index)}
+                        data-testid={`button-remove-item-${index}`}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   );
                 })}
@@ -191,7 +200,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
                   const price = priceOption?.price || 0;
                   const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
-                    <div key={index} className="flex justify-between items-start pb-3 border-b">
+                    <div key={index} className="flex justify-between items-start pb-3 border-b gap-2">
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
@@ -199,6 +208,15 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 flex-shrink-0"
+                        onClick={() => onRemoveItem?.(index)}
+                        data-testid={`button-remove-item-mobile-${index}`}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   );
                 })}
