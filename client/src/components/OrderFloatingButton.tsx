@@ -16,14 +16,13 @@ interface OrderItem {
   item: {
     id: string;
     name: string;
-    priceRegular: number;
-    priceLarge: number;
+    prices: { pieces: number; price: number }[];
     calories: number;
     protein: number;
     carbs: number;
     fats: number;
   };
-  size: 'regular' | 'large';
+  pieces: number;
   quantity: number;
 }
 
@@ -32,13 +31,14 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => {
-    const price = item.size === 'regular' ? item.item.priceRegular : item.item.priceLarge;
+    const priceOption = item.item.prices.find(p => p.pieces === item.pieces);
+    const price = priceOption?.price || 0;
     return sum + price * item.quantity;
   }, 0);
 
   const totalNutrition = items.reduce(
     (totals, orderItem) => {
-      const multiplier = (orderItem.size === 'large' ? 1.5 : 1) * orderItem.quantity;
+      const multiplier = orderItem.quantity;
       return {
         calories: totals.calories + orderItem.item.calories * multiplier,
         protein: totals.protein + orderItem.item.protein * multiplier,
@@ -54,8 +54,9 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
     message += '📋 *Order Details:*\n';
 
     items.forEach((orderItem, index) => {
-      const price = orderItem.size === 'regular' ? orderItem.item.priceRegular : orderItem.item.priceLarge;
-      message += `${index + 1}. ${orderItem.item.name} (${orderItem.size})\n`;
+      const priceOption = orderItem.item.prices.find(p => p.pieces === orderItem.pieces);
+      const price = priceOption?.price || 0;
+      message += `${index + 1}. ${orderItem.item.name} (${orderItem.pieces} pc${orderItem.pieces > 1 ? 's' : ''})\n`;
       message += `   Qty: ${orderItem.quantity} × ৳${price} = ৳${price * orderItem.quantity}\n\n`;
     });
 
@@ -98,13 +99,14 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
             <div className="space-y-4">
               <div className="max-h-60 overflow-y-auto space-y-3">
                 {items.map((orderItem, index) => {
-                  const price = orderItem.size === 'regular' ? orderItem.item.priceRegular : orderItem.item.priceLarge;
+                  const priceOption = orderItem.item.prices.find(p => p.pieces === orderItem.pieces);
+                  const price = priceOption?.price || 0;
                   return (
                     <div key={index} className="flex justify-between items-start pb-3 border-b" data-testid={`order-item-${index}`}>
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {orderItem.size} • Qty: {orderItem.quantity}
+                          {orderItem.pieces} pc{orderItem.pieces > 1 ? 's' : ''} • Qty: {orderItem.quantity}
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>
@@ -176,13 +178,14 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
             <div className="space-y-4">
               <div className="max-h-60 overflow-y-auto space-y-3">
                 {items.map((orderItem, index) => {
-                  const price = orderItem.size === 'regular' ? orderItem.item.priceRegular : orderItem.item.priceLarge;
+                  const priceOption = orderItem.item.prices.find(p => p.pieces === orderItem.pieces);
+                  const price = priceOption?.price || 0;
                   return (
                     <div key={index} className="flex justify-between items-start pb-3 border-b">
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {orderItem.size} • Qty: {orderItem.quantity}
+                          {orderItem.pieces} pc{orderItem.pieces > 1 ? 's' : ''} • Qty: {orderItem.quantity}
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>

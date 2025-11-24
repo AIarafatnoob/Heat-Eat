@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { ShoppingCart } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import frenchFriesImg from '@assets/generated_images/french_fries_product_photo.png';
 import chickenNuggetsImg from '@assets/generated_images/chicken_nuggets_product_photo.png';
@@ -13,8 +12,7 @@ interface MenuItem {
   id: string;
   name: string;
   image: string;
-  priceRegular: number;
-  priceLarge: number;
+  prices: { pieces: number; price: number }[];
   calories: number;
   protein: number;
   carbs: number;
@@ -26,8 +24,11 @@ const quickItems: MenuItem[] = [
     id: '1',
     name: 'French Fry',
     image: frenchFriesImg,
-    priceRegular: 120,
-    priceLarge: 180,
+    prices: [
+      { pieces: 1, price: 250 },
+      { pieces: 2, price: 450 },
+      { pieces: 5, price: 1000 },
+    ],
     calories: 320,
     protein: 4,
     carbs: 42,
@@ -37,8 +38,11 @@ const quickItems: MenuItem[] = [
     id: '2',
     name: 'Chicken Nuggets',
     image: chickenNuggetsImg,
-    priceRegular: 200,
-    priceLarge: 300,
+    prices: [
+      { pieces: 1, price: 280 },
+      { pieces: 2, price: 500 },
+      { pieces: 5, price: 1150 },
+    ],
     calories: 280,
     protein: 18,
     carbs: 16,
@@ -48,8 +52,11 @@ const quickItems: MenuItem[] = [
     id: '3',
     name: 'Chicken Roll',
     image: chickenRollImg,
-    priceRegular: 150,
-    priceLarge: 220,
+    prices: [
+      { pieces: 1, price: 200 },
+      { pieces: 2, price: 380 },
+      { pieces: 5, price: 900 },
+    ],
     calories: 350,
     protein: 22,
     carbs: 35,
@@ -59,8 +66,11 @@ const quickItems: MenuItem[] = [
     id: '4',
     name: 'Chicken Boll',
     image: chickenBollImg,
-    priceRegular: 180,
-    priceLarge: 260,
+    prices: [
+      { pieces: 1, price: 220 },
+      { pieces: 2, price: 400 },
+      { pieces: 5, price: 950 },
+    ],
     calories: 310,
     protein: 20,
     carbs: 28,
@@ -70,51 +80,27 @@ const quickItems: MenuItem[] = [
 
 interface OrderItem {
   item: MenuItem;
-  size: 'regular' | 'large';
+  pieces: number;
   quantity: number;
 }
 
 export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
-  const [selections, setSelections] = useState<Map<string, 'regular' | 'large'>>(new Map());
+  const [cart, setCart] = useState<Map<string, OrderItem>>(new Map());
 
-  const toggleSelection = (id: string, size: 'regular' | 'large') => {
-    const newSelections = new Map(selections);
-    if (newSelections.has(id) && newSelections.get(id) === size) {
-      newSelections.delete(id);
+  const addToCart = (item: MenuItem, pieces: number) => {
+    const key = `${item.id}-${pieces}`;
+    const newCart = new Map(cart);
+    const existing = newCart.get(key);
+
+    if (existing) {
+      newCart.set(key, { ...existing, quantity: existing.quantity + 1 });
     } else {
-      newSelections.set(id, size);
+      newCart.set(key, { item, pieces, quantity: 1 });
     }
-    setSelections(newSelections);
-    
-    // Convert selections to order items format
-    const orderItems: OrderItem[] = Array.from(newSelections.entries()).map(([itemId, selectedSize]) => {
-      const item = quickItems.find(i => i.id === itemId)!;
-      return {
-        item,
-        size: selectedSize,
-        quantity: 1,
-      };
-    });
-    
-    onOrderUpdate?.(orderItems);
-  };
 
-  const calculateTotals = () => {
-    let totals = { calories: 0, protein: 0, carbs: 0, fats: 0 };
-    selections.forEach((size, id) => {
-      const item = quickItems.find((i) => i.id === id);
-      if (item) {
-        const multiplier = size === 'large' ? 1.5 : 1;
-        totals.calories += item.calories * multiplier;
-        totals.protein += item.protein * multiplier;
-        totals.carbs += item.carbs * multiplier;
-        totals.fats += item.fats * multiplier;
-      }
-    });
-    return totals;
+    setCart(newCart);
+    onOrderUpdate?.(Array.from(newCart.values()));
   };
-
-  const totals = calculateTotals();
 
   return (
     <section id="quick-select" className="py-16 md:py-20 lg:py-24 bg-muted/30" data-testid="section-quick-select">
@@ -124,115 +110,60 @@ export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?:
             Quick Select Favorites
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Flash-frozen premium items ready to heat and eat. Select your favorites!
+            Flash-frozen premium items - click to add to your order
           </p>
         </div>
 
-        <ScrollArea className="w-full whitespace-nowrap mb-8">
+        <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex gap-6 pb-4">
-            {quickItems.map((item) => {
-              const isSelected = selections.has(item.id);
-              const selectedSize = selections.get(item.id);
+            {quickItems.map((item) => (
+              <Card
+                key={item.id}
+                className="flex-none w-[240px] overflow-hidden hover-elevate transition-all"
+                data-testid={`card-quick-item-${item.id}`}
+              >
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-40 object-cover"
+                    />
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <h3 className="font-semibold text-base" data-testid={`text-item-name-${item.id}`}>
+                      {item.name}
+                    </h3>
 
-              return (
-                <Card
-                  key={item.id}
-                  className={`flex-none w-[280px] transition-all duration-300 ${
-                    isSelected ? 'ring-2 ring-primary shadow-lg scale-105' : ''
-                  }`}
-                  data-testid={`card-quick-item-${item.id}`}
-                >
-                  <CardContent className="p-0">
-                    <div className="relative">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-48 object-cover rounded-t-lg"
-                      />
-                      <div className="absolute top-3 right-3">
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={() =>
-                            toggleSelection(item.id, selectedSize || 'regular')
-                          }
-                          className="h-6 w-6 bg-white border-2"
-                          data-testid={`checkbox-select-${item.id}`}
-                        />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-3" data-testid={`text-item-name-${item.id}`}>
-                        {item.name}
-                      </h3>
-                      <div className="flex gap-2 mb-4">
+                    <div className="space-y-2">
+                      {item.prices.map((priceOption) => (
                         <Button
-                          variant={selectedSize === 'regular' ? 'default' : 'outline'}
+                          key={`${item.id}-${priceOption.pieces}`}
+                          variant="outline"
                           size="sm"
-                          className="flex-1"
-                          onClick={() => toggleSelection(item.id, 'regular')}
-                          data-testid={`button-regular-${item.id}`}
+                          className="w-full text-xs flex items-center justify-between gap-1"
+                          onClick={() => addToCart(item, priceOption.pieces)}
+                          data-testid={`button-add-${item.id}-${priceOption.pieces}`}
                         >
-                          Regular ৳{item.priceRegular}
+                          <span>{priceOption.pieces} pc{priceOption.pieces > 1 ? 's' : ''}</span>
+                          <span className="ml-auto font-bold text-primary">৳{priceOption.price}</span>
                         </Button>
-                        <Button
-                          variant={selectedSize === 'large' ? 'default' : 'outline'}
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => toggleSelection(item.id, 'large')}
-                          data-testid={`button-large-${item.id}`}
-                        >
-                          Large ৳{item.priceLarge}
-                        </Button>
-                      </div>
+                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
 
-        {selections.size > 0 && (
-          <Card className="sticky bottom-4 shadow-xl" data-testid="card-nutrition-counter">
-            <CardContent className="p-6">
-              <h3 className="font-semibold text-lg mb-4">Your Selection Totals</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center">
-                  <Badge variant="outline" className="mb-2">
-                    Calories
-                  </Badge>
-                  <p className="text-2xl font-bold text-primary" data-testid="text-total-calories">
-                    {Math.round(totals.calories)}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <Badge variant="outline" className="mb-2">
-                    Protein
-                  </Badge>
-                  <p className="text-2xl font-bold text-secondary" data-testid="text-total-protein">
-                    {Math.round(totals.protein)}g
-                  </p>
-                </div>
-                <div className="text-center">
-                  <Badge variant="outline" className="mb-2">
-                    Carbs
-                  </Badge>
-                  <p className="text-2xl font-bold text-accent" data-testid="text-total-carbs">
-                    {Math.round(totals.carbs)}g
-                  </p>
-                </div>
-                <div className="text-center">
-                  <Badge variant="outline" className="mb-2">
-                    Fats
-                  </Badge>
-                  <p className="text-2xl font-bold text-muted-foreground" data-testid="text-total-fats">
-                    {Math.round(totals.fats)}g
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {cart.size > 0 && (
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            <ShoppingCart className="h-5 w-5 inline mr-2" />
+            {Array.from(cart.values()).reduce((sum, item) => sum + item.quantity, 0)} item
+            {Array.from(cart.values()).reduce((sum, item) => sum + item.quantity, 0) > 1 ? 's' : ''} in cart
+          </div>
         )}
       </div>
     </section>

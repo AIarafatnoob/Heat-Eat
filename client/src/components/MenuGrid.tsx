@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Minus } from 'lucide-react';
@@ -18,8 +18,7 @@ interface MenuItem {
   id: string;
   name: string;
   image: string;
-  priceRegular: number;
-  priceLarge: number;
+  prices: { pieces: number; price: number }[];
   calories: number;
   protein: number;
   carbs: number;
@@ -32,8 +31,11 @@ const menuItems: MenuItem[] = [
     id: '1',
     name: 'French Fry',
     image: frenchFriesImg,
-    priceRegular: 120,
-    priceLarge: 180,
+    prices: [
+      { pieces: 1, price: 250 },
+      { pieces: 2, price: 450 },
+      { pieces: 5, price: 1000 },
+    ],
     calories: 320,
     protein: 4,
     carbs: 42,
@@ -44,8 +46,11 @@ const menuItems: MenuItem[] = [
     id: '2',
     name: 'Chicken Nuggets',
     image: chickenNuggetsImg,
-    priceRegular: 200,
-    priceLarge: 300,
+    prices: [
+      { pieces: 1, price: 280 },
+      { pieces: 2, price: 500 },
+      { pieces: 5, price: 1150 },
+    ],
     calories: 280,
     protein: 18,
     carbs: 16,
@@ -56,8 +61,11 @@ const menuItems: MenuItem[] = [
     id: '3',
     name: 'Chicken Roll',
     image: chickenRollImg,
-    priceRegular: 150,
-    priceLarge: 220,
+    prices: [
+      { pieces: 1, price: 200 },
+      { pieces: 2, price: 380 },
+      { pieces: 5, price: 900 },
+    ],
     calories: 350,
     protein: 22,
     carbs: 35,
@@ -68,8 +76,11 @@ const menuItems: MenuItem[] = [
     id: '4',
     name: 'Chicken Boll',
     image: chickenBollImg,
-    priceRegular: 180,
-    priceLarge: 260,
+    prices: [
+      { pieces: 1, price: 220 },
+      { pieces: 2, price: 400 },
+      { pieces: 5, price: 950 },
+    ],
     calories: 310,
     protein: 20,
     carbs: 28,
@@ -80,8 +91,11 @@ const menuItems: MenuItem[] = [
     id: '5',
     name: 'Chicken Fry',
     image: chickenFryImg,
-    priceRegular: 220,
-    priceLarge: 320,
+    prices: [
+      { pieces: 2, price: 320 },
+      { pieces: 4, price: 580 },
+      { pieces: 8, price: 1080 },
+    ],
     calories: 380,
     protein: 26,
     carbs: 18,
@@ -92,8 +106,11 @@ const menuItems: MenuItem[] = [
     id: '6',
     name: 'Vegetable Roll',
     image: vegetableRollImg,
-    priceRegular: 100,
-    priceLarge: 150,
+    prices: [
+      { pieces: 1, price: 180 },
+      { pieces: 2, price: 320 },
+      { pieces: 5, price: 750 },
+    ],
     calories: 240,
     protein: 6,
     carbs: 32,
@@ -104,8 +121,11 @@ const menuItems: MenuItem[] = [
     id: '7',
     name: 'Naga Shingara',
     image: nagaShingaraImg,
-    priceRegular: 80,
-    priceLarge: 120,
+    prices: [
+      { pieces: 2, price: 200 },
+      { pieces: 4, price: 360 },
+      { pieces: 10, price: 850 },
+    ],
     calories: 200,
     protein: 5,
     carbs: 28,
@@ -116,8 +136,11 @@ const menuItems: MenuItem[] = [
     id: '8',
     name: 'Chicken Kabab',
     image: chickenKababImg,
-    priceRegular: 180,
-    priceLarge: 260,
+    prices: [
+      { pieces: 2, price: 300 },
+      { pieces: 4, price: 550 },
+      { pieces: 8, price: 1050 },
+    ],
     calories: 290,
     protein: 24,
     carbs: 12,
@@ -128,8 +151,11 @@ const menuItems: MenuItem[] = [
     id: '9',
     name: 'Samucha',
     image: samuchaImg,
-    priceRegular: 70,
-    priceLarge: 110,
+    prices: [
+      { pieces: 2, price: 180 },
+      { pieces: 4, price: 320 },
+      { pieces: 10, price: 750 },
+    ],
     calories: 180,
     protein: 4,
     carbs: 24,
@@ -140,8 +166,11 @@ const menuItems: MenuItem[] = [
     id: '10',
     name: 'Chicken Tikka Kabab',
     image: chickenTikkaKababImg,
-    priceRegular: 250,
-    priceLarge: 350,
+    prices: [
+      { pieces: 2, price: 350 },
+      { pieces: 4, price: 650 },
+      { pieces: 8, price: 1200 },
+    ],
     calories: 320,
     protein: 28,
     carbs: 10,
@@ -152,30 +181,30 @@ const menuItems: MenuItem[] = [
 
 interface OrderItem {
   item: MenuItem;
-  size: 'regular' | 'large';
+  pieces: number;
   quantity: number;
 }
 
 export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
   const [order, setOrder] = useState<Map<string, OrderItem>>(new Map());
 
-  const addToOrder = (item: MenuItem, size: 'regular' | 'large') => {
-    const key = `${item.id}-${size}`;
+  const addToOrder = (item: MenuItem, pieces: number) => {
+    const key = `${item.id}-${pieces}`;
     const newOrder = new Map(order);
     const existing = newOrder.get(key);
 
     if (existing) {
       newOrder.set(key, { ...existing, quantity: existing.quantity + 1 });
     } else {
-      newOrder.set(key, { item, size, quantity: 1 });
+      newOrder.set(key, { item, pieces, quantity: 1 });
     }
 
     setOrder(newOrder);
     onOrderUpdate?.(Array.from(newOrder.values()));
   };
 
-  const removeFromOrder = (item: MenuItem, size: 'regular' | 'large') => {
-    const key = `${item.id}-${size}`;
+  const removeFromOrder = (item: MenuItem, pieces: number) => {
+    const key = `${item.id}-${pieces}`;
     const newOrder = new Map(order);
     const existing = newOrder.get(key);
 
@@ -189,8 +218,8 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
     onOrderUpdate?.(Array.from(newOrder.values()));
   };
 
-  const getItemQuantity = (itemId: string, size: 'regular' | 'large') => {
-    const key = `${itemId}-${size}`;
+  const getItemQuantity = (itemId: string, pieces: number) => {
+    const key = `${itemId}-${pieces}`;
     return order.get(key)?.quantity || 0;
   };
 
@@ -234,72 +263,41 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                     </Badge>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Regular</p>
-                        <p className="font-semibold">৳{item.priceRegular}</p>
+                  <div className="space-y-2">
+                    {item.prices.map((priceOption) => (
+                      <div key={`${item.id}-${priceOption.pieces}`} className="flex items-center justify-between gap-2">
+                        <div className="text-sm flex-1">
+                          <p className="text-muted-foreground">{priceOption.pieces} pc{priceOption.pieces > 1 ? 's' : ''}</p>
+                          <p className="font-semibold">৳{priceOption.price}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {getItemQuantity(item.id, priceOption.pieces) > 0 && (
+                            <>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-8 w-8"
+                                onClick={() => removeFromOrder(item, priceOption.pieces)}
+                                data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <span className="w-6 text-center font-semibold text-xs" data-testid={`text-qty-${item.id}-${priceOption.pieces}`}>
+                                {getItemQuantity(item.id, priceOption.pieces)}
+                              </span>
+                            </>
+                          )}
+                          <Button
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => addToOrder(item, priceOption.pieces)}
+                            data-testid={`button-add-${item.id}-${priceOption.pieces}`}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {getItemQuantity(item.id, 'regular') > 0 && (
-                          <>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-8 w-8"
-                              onClick={() => removeFromOrder(item, 'regular')}
-                              data-testid={`button-decrease-regular-${item.id}`}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-8 text-center font-semibold" data-testid={`text-qty-regular-${item.id}`}>
-                              {getItemQuantity(item.id, 'regular')}
-                            </span>
-                          </>
-                        )}
-                        <Button
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => addToOrder(item, 'regular')}
-                          data-testid={`button-add-regular-${item.id}`}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Large</p>
-                        <p className="font-semibold">৳{item.priceLarge}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {getItemQuantity(item.id, 'large') > 0 && (
-                          <>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-8 w-8"
-                              onClick={() => removeFromOrder(item, 'large')}
-                              data-testid={`button-decrease-large-${item.id}`}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-8 text-center font-semibold" data-testid={`text-qty-large-${item.id}`}>
-                              {getItemQuantity(item.id, 'large')}
-                            </span>
-                          </>
-                        )}
-                        <Button
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => addToOrder(item, 'large')}
-                          data-testid={`button-add-large-${item.id}`}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>

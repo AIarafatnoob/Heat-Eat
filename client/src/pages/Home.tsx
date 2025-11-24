@@ -11,14 +11,13 @@ interface OrderItem {
   item: {
     id: string;
     name: string;
-    priceRegular: number;
-    priceLarge: number;
+    prices: { pieces: number; price: number }[];
     calories: number;
     protein: number;
     carbs: number;
     fats: number;
   };
-  size: 'regular' | 'large';
+  pieces: number;
   quantity: number;
 }
 
