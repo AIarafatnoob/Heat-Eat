@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import QuickSelectCarousel from '@/components/QuickSelectCarousel';
+import NutritionBar from '@/components/NutritionBar';
 import MenuGrid from '@/components/MenuGrid';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
@@ -52,11 +53,18 @@ export default function Home() {
     setOrderItems([]);
   };
 
+  // Extract quick select items (IDs 1-4) for nutrition display
+  const quickSelectItems = orderItems.filter(item => {
+    const itemId = parseInt(item.item.id);
+    return itemId <= 4;
+  });
+
   return (
     <div className="min-h-screen">
       <Navigation />
       <HeroSection />
       <QuickSelectCarousel onOrderUpdate={handleQuickSelectUpdate} />
+      <NutritionBar items={quickSelectItems} />
       <MenuGrid onOrderUpdate={handleMenuUpdate} />
       <ContactSection />
       <Footer />
