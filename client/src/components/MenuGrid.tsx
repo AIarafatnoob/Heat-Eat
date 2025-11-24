@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Minus, Check } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import frenchFriesImg from '@assets/generated_images/french_fries_product_photo.png';
 import chickenNuggetsImg from '@assets/generated_images/chicken_nuggets_product_photo.png';
 import chickenRollImg from '@assets/generated_images/chicken_roll_product_photo.png';
@@ -262,54 +262,39 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                   <div className="space-y-2">
                     {item.prices.map((priceOption) => {
                       const qty = getItemQuantity(item.id, priceOption.pieces);
-                      const isSelected = qty > 0;
 
                       return (
                         <div
                           key={`${item.id}-${priceOption.pieces}`}
-                          className={`flex items-center justify-between gap-2 p-2 rounded-lg transition-all ${
-                            isSelected ? 'bg-primary/10 border border-primary' : 'border border-transparent'
+                          className={`flex items-center justify-between gap-3 p-3 rounded-lg transition-all ${
+                            qty > 0 ? 'bg-primary/10 border border-primary' : 'bg-muted/50 border border-transparent hover:bg-muted'
                           }`}
                         >
                           <div className="text-sm flex-1">
-                            <p className={`${isSelected ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
+                            <p className={`${qty > 0 ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                               {priceOption.label}
                             </p>
                             <p className="font-semibold">৳{priceOption.price}</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            {isSelected && (
-                              <>
-                                <Button
-                                  size="icon"
-                                  variant="outline"
-                                  className="h-7 w-7"
-                                  onClick={() => removeFromOrder(item, priceOption.pieces)}
-                                  data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
-                                >
-                                  <Minus className="h-3 w-3" />
-                                </Button>
-                                <span className="w-5 text-center font-semibold text-xs">{qty}</span>
-                              </>
-                            )}
                             <Button
                               size="icon"
-                              className={`h-7 w-7 ${isSelected ? '' : ''}`}
-                              onClick={() => {
-                                if (isSelected) {
-                                  // Remove all quantity of this item when clicking check
-                                  const key = `${item.id}-${priceOption.pieces}`;
-                                  const newOrder = new Map(order);
-                                  newOrder.delete(key);
-                                  setOrder(newOrder);
-                                  onOrderUpdate?.(Array.from(newOrder.values()));
-                                } else {
-                                  addToOrder(item, priceOption.pieces);
-                                }
-                              }}
-                              data-testid={`button-add-${item.id}-${priceOption.pieces}`}
+                              variant="outline"
+                              className="h-7 w-7"
+                              onClick={() => removeFromOrder(item, priceOption.pieces)}
+                              disabled={qty === 0}
+                              data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
                             >
-                              {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <span className="w-6 text-center font-semibold text-sm">{qty}</span>
+                            <Button
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => addToOrder(item, priceOption.pieces)}
+                              data-testid={`button-increase-${item.id}-${priceOption.pieces}`}
+                            >
+                              <Plus className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
