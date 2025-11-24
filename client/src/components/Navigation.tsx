@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Phone } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import logoImage from '@assets/image-removebg-preview_1764013789708.png';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,14 +15,6 @@ export default function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setOpen(false);
-    }
-  };
 
   return (
     <>
@@ -37,16 +27,11 @@ export default function Navigation() {
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo - appears in navbar when scrolled */}
-            {scrolled && (
-              <div className="flex items-center h-10 transition-all duration-300" data-testid="logo-container-navbar">
-                <img src={logoImage} alt="Heat & Eat Logo" className="h-full w-auto" />
-              </div>
-            )}
-            {!scrolled && <div className="flex-1" />}
+            {/* Spacer for logo area */}
+            <div className="w-16 md:w-20" />
 
-            {/* Desktop buttons */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Desktop and Mobile buttons - always visible */}
+            <div className="flex items-center gap-2 md:gap-3">
               <Button
                 size="icon"
                 className="gap-2 bg-accent hover:bg-accent/90"
@@ -64,47 +49,23 @@ export default function Navigation() {
                 <SiWhatsapp className="h-4 w-4" />
               </Button>
             </div>
-
-            {/* Mobile menu */}
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon" data-testid="button-menu-toggle">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px]">
-                <div className="flex flex-col gap-6 mt-8">
-                  <div className="flex flex-col gap-3 px-4">
-                    <Button
-                      className="gap-2 w-full bg-accent hover:bg-accent/90"
-                      onClick={() => window.open('tel:+881936135709', '_blank')}
-                      data-testid="button-call-mobile"
-                    >
-                      <Phone className="h-4 w-4" />
-                      Call Us
-                    </Button>
-                    <Button
-                      className="gap-2 w-full bg-secondary hover:bg-secondary/90"
-                      onClick={() => window.open('https://wa.me/881936135709', '_blank')}
-                      data-testid="button-whatsapp-mobile"
-                    >
-                      <SiWhatsapp className="h-4 w-4" />
-                      Order Now
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
       </nav>
 
-      {/* Centered logo at top of hero */}
-      {!scrolled && (
-        <div className="fixed top-6 left-0 right-0 z-30 flex justify-center transition-all duration-300 pt-4" data-testid="logo-container-hero">
-          <img src={logoImage} alt="Heat & Eat Logo" className="h-20 w-auto" />
-        </div>
-      )}
+      {/* Fixed logo with smooth transform animation */}
+      <div
+        className="fixed z-30 transition-all duration-500 ease-out"
+        style={{
+          top: scrolled ? '12px' : '80px',
+          left: scrolled ? '32px' : '50%',
+          transform: scrolled ? 'translateX(0) scale(0.6)' : 'translateX(-50%) scale(1)',
+          transformOrigin: 'top center',
+        }}
+        data-testid="logo-container"
+      >
+        <img src={logoImage} alt="Heat & Eat Logo" className="h-28 md:h-32 w-auto" />
+      </div>
     </>
   );
 }

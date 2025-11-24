@@ -50,7 +50,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Button
             size="lg"
-            className="gap-2 text-lg bg-white hover:bg-white/90 text-black font-semibold"
+            className="gap-2 text-lg bg-white text-black font-semibold hover:bg-white/90"
             onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
             data-testid="button-view-menu"
           >

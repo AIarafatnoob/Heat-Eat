@@ -143,7 +143,7 @@ export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?:
                         return (
                           <Button
                             key={`${item.id}-${priceOption.pieces}`}
-                            variant={selected ? 'default' : 'outline'}
+                            variant={selected ? 'default' : 'secondary'}
                             size="sm"
                             className={`w-full text-xs flex items-center justify-between gap-1 transition-all ${
                               selected ? 'ring-2 ring-primary' : ''
