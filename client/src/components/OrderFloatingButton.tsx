@@ -16,7 +16,7 @@ interface OrderItem {
   item: {
     id: string;
     name: string;
-    prices: { pieces: number; price: number }[];
+    prices: { label: string; pieces: number; price: number }[];
     calories: number;
     protein: number;
     carbs: number;
@@ -26,7 +26,7 @@ interface OrderItem {
   quantity: number;
 }
 
-export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
+export default function OrderFloatingButton({ items, onClearCart }: { items: OrderItem[]; onClearCart?: () => void }) {
   const [open, setOpen] = useState(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -101,18 +101,33 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
                 {items.map((orderItem, index) => {
                   const priceOption = orderItem.item.prices.find(p => p.pieces === orderItem.pieces);
                   const price = priceOption?.price || 0;
+                  const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
                     <div key={index} className="flex justify-between items-start pb-3 border-b" data-testid={`order-item-${index}`}>
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {orderItem.pieces} pc{orderItem.pieces > 1 ? 's' : ''} • Qty: {orderItem.quantity}
+                          {label} • Qty: {orderItem.quantity}
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>
                     </div>
                   );
                 })}
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 text-xs"
+                  onClick={() => {
+                    onClearCart?.();
+                    setOpen(false);
+                  }}
+                  data-testid="button-clear-cart"
+                >
+                  Clear Cart
+                </Button>
               </div>
 
               <div className="pt-3 border-t">
@@ -180,18 +195,33 @@ export default function OrderFloatingButton({ items }: { items: OrderItem[] }) {
                 {items.map((orderItem, index) => {
                   const priceOption = orderItem.item.prices.find(p => p.pieces === orderItem.pieces);
                   const price = priceOption?.price || 0;
+                  const label = priceOption?.label || `${orderItem.pieces}`;
                   return (
                     <div key={index} className="flex justify-between items-start pb-3 border-b">
                       <div className="flex-1">
                         <p className="font-medium">{orderItem.item.name}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {orderItem.pieces} pc{orderItem.pieces > 1 ? 's' : ''} • Qty: {orderItem.quantity}
+                          {label} • Qty: {orderItem.quantity}
                         </p>
                       </div>
                       <p className="font-semibold">৳{price * orderItem.quantity}</p>
                     </div>
                   );
                 })}
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 text-xs"
+                  onClick={() => {
+                    onClearCart?.();
+                    setOpen(false);
+                  }}
+                  data-testid="button-clear-cart-mobile"
+                >
+                  Clear Cart
+                </Button>
               </div>
 
               <div className="pt-3 border-t">

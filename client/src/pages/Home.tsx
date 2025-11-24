@@ -11,7 +11,7 @@ interface OrderItem {
   item: {
     id: string;
     name: string;
-    prices: { pieces: number; price: number }[];
+    prices: { label: string; pieces: number; price: number }[];
     calories: number;
     protein: number;
     carbs: number;
@@ -48,6 +48,10 @@ export default function Home() {
     });
   };
 
+  const handleClearCart = () => {
+    setOrderItems([]);
+  };
+
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -56,7 +60,7 @@ export default function Home() {
       <MenuGrid onOrderUpdate={handleMenuUpdate} />
       <ContactSection />
       <Footer />
-      <OrderFloatingButton items={orderItems} />
+      <OrderFloatingButton items={orderItems} onClearCart={handleClearCart} />
     </div>
   );
 }

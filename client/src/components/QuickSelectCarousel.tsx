@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Check } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import frenchFriesImg from '@assets/generated_images/french_fries_product_photo.png';
 import chickenNuggetsImg from '@assets/generated_images/chicken_nuggets_product_photo.png';
@@ -12,7 +12,7 @@ interface MenuItem {
   id: string;
   name: string;
   image: string;
-  prices: { pieces: number; price: number }[];
+  prices: { label: string; pieces: number; price: number }[];
   calories: number;
   protein: number;
   carbs: number;
@@ -25,9 +25,8 @@ const quickItems: MenuItem[] = [
     name: 'French Fry',
     image: frenchFriesImg,
     prices: [
-      { pieces: 1, price: 250 },
-      { pieces: 2, price: 450 },
-      { pieces: 5, price: 1000 },
+      { label: '500g', pieces: 500, price: 280 },
+      { label: '1kg', pieces: 1000, price: 480 },
     ],
     calories: 320,
     protein: 4,
@@ -39,9 +38,8 @@ const quickItems: MenuItem[] = [
     name: 'Chicken Nuggets',
     image: chickenNuggetsImg,
     prices: [
-      { pieces: 1, price: 280 },
-      { pieces: 2, price: 500 },
-      { pieces: 5, price: 1150 },
+      { label: '8 pcs', pieces: 8, price: 350 },
+      { label: '16 pcs', pieces: 16, price: 620 },
     ],
     calories: 280,
     protein: 18,
@@ -53,9 +51,8 @@ const quickItems: MenuItem[] = [
     name: 'Chicken Roll',
     image: chickenRollImg,
     prices: [
-      { pieces: 1, price: 200 },
-      { pieces: 2, price: 380 },
-      { pieces: 5, price: 900 },
+      { label: '8 pcs', pieces: 8, price: 320 },
+      { label: '16 pcs', pieces: 16, price: 580 },
     ],
     calories: 350,
     protein: 22,
@@ -67,9 +64,8 @@ const quickItems: MenuItem[] = [
     name: 'Chicken Boll',
     image: chickenBollImg,
     prices: [
-      { pieces: 1, price: 220 },
-      { pieces: 2, price: 400 },
-      { pieces: 5, price: 950 },
+      { label: '8 pcs', pieces: 8, price: 300 },
+      { label: '16 pcs', pieces: 16, price: 540 },
     ],
     calories: 310,
     protein: 20,
@@ -100,6 +96,10 @@ export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?:
 
     setCart(newCart);
     onOrderUpdate?.(Array.from(newCart.values()));
+  };
+
+  const isSelected = (itemId: string, pieces: number) => {
+    return cart.has(`${itemId}-${pieces}`);
   };
 
   return (
@@ -136,19 +136,29 @@ export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?:
                     </h3>
 
                     <div className="space-y-2">
-                      {item.prices.map((priceOption) => (
-                        <Button
-                          key={`${item.id}-${priceOption.pieces}`}
-                          variant="outline"
-                          size="sm"
-                          className="w-full text-xs flex items-center justify-between gap-1"
-                          onClick={() => addToCart(item, priceOption.pieces)}
-                          data-testid={`button-add-${item.id}-${priceOption.pieces}`}
-                        >
-                          <span>{priceOption.pieces} pc{priceOption.pieces > 1 ? 's' : ''}</span>
-                          <span className="ml-auto font-bold text-primary">৳{priceOption.price}</span>
-                        </Button>
-                      ))}
+                      {item.prices.map((priceOption) => {
+                        const selected = isSelected(item.id, priceOption.pieces);
+                        return (
+                          <Button
+                            key={`${item.id}-${priceOption.pieces}`}
+                            variant={selected ? 'default' : 'outline'}
+                            size="sm"
+                            className={`w-full text-xs flex items-center justify-between gap-1 transition-all ${
+                              selected ? 'ring-2 ring-primary' : ''
+                            }`}
+                            onClick={() => addToCart(item, priceOption.pieces)}
+                            data-testid={`button-add-${item.id}-${priceOption.pieces}`}
+                          >
+                            <span className="flex items-center gap-1">
+                              {selected && <Check className="h-3 w-3" />}
+                              {priceOption.label}
+                            </span>
+                            <span className={`ml-auto font-bold ${selected ? '' : 'text-primary'}`}>
+                              ৳{priceOption.price}
+                            </span>
+                          </Button>
+                        );
+                      })}
                     </div>
                   </div>
                 </CardContent>

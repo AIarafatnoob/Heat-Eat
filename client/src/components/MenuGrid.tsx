@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, Check } from 'lucide-react';
 import frenchFriesImg from '@assets/generated_images/french_fries_product_photo.png';
 import chickenNuggetsImg from '@assets/generated_images/chicken_nuggets_product_photo.png';
 import chickenRollImg from '@assets/generated_images/chicken_roll_product_photo.png';
@@ -18,7 +18,7 @@ interface MenuItem {
   id: string;
   name: string;
   image: string;
-  prices: { pieces: number; price: number }[];
+  prices: { label: string; pieces: number; price: number }[];
   calories: number;
   protein: number;
   carbs: number;
@@ -32,9 +32,8 @@ const menuItems: MenuItem[] = [
     name: 'French Fry',
     image: frenchFriesImg,
     prices: [
-      { pieces: 1, price: 250 },
-      { pieces: 2, price: 450 },
-      { pieces: 5, price: 1000 },
+      { label: '500g', pieces: 500, price: 280 },
+      { label: '1kg', pieces: 1000, price: 480 },
     ],
     calories: 320,
     protein: 4,
@@ -47,9 +46,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Nuggets',
     image: chickenNuggetsImg,
     prices: [
-      { pieces: 1, price: 280 },
-      { pieces: 2, price: 500 },
-      { pieces: 5, price: 1150 },
+      { label: '8 pcs', pieces: 8, price: 350 },
+      { label: '16 pcs', pieces: 16, price: 620 },
     ],
     calories: 280,
     protein: 18,
@@ -62,9 +60,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Roll',
     image: chickenRollImg,
     prices: [
-      { pieces: 1, price: 200 },
-      { pieces: 2, price: 380 },
-      { pieces: 5, price: 900 },
+      { label: '8 pcs', pieces: 8, price: 320 },
+      { label: '16 pcs', pieces: 16, price: 580 },
     ],
     calories: 350,
     protein: 22,
@@ -77,9 +74,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Boll',
     image: chickenBollImg,
     prices: [
-      { pieces: 1, price: 220 },
-      { pieces: 2, price: 400 },
-      { pieces: 5, price: 950 },
+      { label: '8 pcs', pieces: 8, price: 300 },
+      { label: '16 pcs', pieces: 16, price: 540 },
     ],
     calories: 310,
     protein: 20,
@@ -92,9 +88,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Fry',
     image: chickenFryImg,
     prices: [
-      { pieces: 2, price: 320 },
-      { pieces: 4, price: 580 },
-      { pieces: 8, price: 1080 },
+      { label: '8 pcs', pieces: 8, price: 320 },
+      { label: '16 pcs', pieces: 16, price: 580 },
     ],
     calories: 380,
     protein: 26,
@@ -107,9 +102,8 @@ const menuItems: MenuItem[] = [
     name: 'Vegetable Roll',
     image: vegetableRollImg,
     prices: [
-      { pieces: 1, price: 180 },
-      { pieces: 2, price: 320 },
-      { pieces: 5, price: 750 },
+      { label: '8 pcs', pieces: 8, price: 280 },
+      { label: '16 pcs', pieces: 16, price: 500 },
     ],
     calories: 240,
     protein: 6,
@@ -122,9 +116,8 @@ const menuItems: MenuItem[] = [
     name: 'Naga Shingara',
     image: nagaShingaraImg,
     prices: [
-      { pieces: 2, price: 200 },
-      { pieces: 4, price: 360 },
-      { pieces: 10, price: 850 },
+      { label: '8 pcs', pieces: 8, price: 250 },
+      { label: '16 pcs', pieces: 16, price: 450 },
     ],
     calories: 200,
     protein: 5,
@@ -137,9 +130,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Kabab',
     image: chickenKababImg,
     prices: [
-      { pieces: 2, price: 300 },
-      { pieces: 4, price: 550 },
-      { pieces: 8, price: 1050 },
+      { label: '8 pcs', pieces: 8, price: 340 },
+      { label: '16 pcs', pieces: 16, price: 620 },
     ],
     calories: 290,
     protein: 24,
@@ -152,9 +144,8 @@ const menuItems: MenuItem[] = [
     name: 'Samucha',
     image: samuchaImg,
     prices: [
-      { pieces: 2, price: 180 },
-      { pieces: 4, price: 320 },
-      { pieces: 10, price: 750 },
+      { label: '8 pcs', pieces: 8, price: 240 },
+      { label: '16 pcs', pieces: 16, price: 430 },
     ],
     calories: 180,
     protein: 4,
@@ -167,9 +158,8 @@ const menuItems: MenuItem[] = [
     name: 'Chicken Tikka Kabab',
     image: chickenTikkaKababImg,
     prices: [
-      { pieces: 2, price: 350 },
-      { pieces: 4, price: 650 },
-      { pieces: 8, price: 1200 },
+      { label: '8 pcs', pieces: 8, price: 380 },
+      { label: '16 pcs', pieces: 16, price: 700 },
     ],
     calories: 320,
     protein: 28,
@@ -264,40 +254,50 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                   </div>
 
                   <div className="space-y-2">
-                    {item.prices.map((priceOption) => (
-                      <div key={`${item.id}-${priceOption.pieces}`} className="flex items-center justify-between gap-2">
-                        <div className="text-sm flex-1">
-                          <p className="text-muted-foreground">{priceOption.pieces} pc{priceOption.pieces > 1 ? 's' : ''}</p>
-                          <p className="font-semibold">৳{priceOption.price}</p>
+                    {item.prices.map((priceOption) => {
+                      const qty = getItemQuantity(item.id, priceOption.pieces);
+                      const isSelected = qty > 0;
+
+                      return (
+                        <div
+                          key={`${item.id}-${priceOption.pieces}`}
+                          className={`flex items-center justify-between gap-2 p-2 rounded-lg transition-all ${
+                            isSelected ? 'bg-primary/10 border border-primary' : 'border border-transparent'
+                          }`}
+                        >
+                          <div className="text-sm flex-1">
+                            <p className={`${isSelected ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
+                              {priceOption.label}
+                            </p>
+                            <p className="font-semibold">৳{priceOption.price}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isSelected && (
+                              <>
+                                <Button
+                                  size="icon"
+                                  variant="outline"
+                                  className="h-7 w-7"
+                                  onClick={() => removeFromOrder(item, priceOption.pieces)}
+                                  data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </Button>
+                                <span className="w-5 text-center font-semibold text-xs">{qty}</span>
+                              </>
+                            )}
+                            <Button
+                              size="icon"
+                              className={`h-7 w-7 ${isSelected ? '' : ''}`}
+                              onClick={() => addToOrder(item, priceOption.pieces)}
+                              data-testid={`button-add-${item.id}-${priceOption.pieces}`}
+                            >
+                              {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {getItemQuantity(item.id, priceOption.pieces) > 0 && (
-                            <>
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                className="h-8 w-8"
-                                onClick={() => removeFromOrder(item, priceOption.pieces)}
-                                data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                              <span className="w-6 text-center font-semibold text-xs" data-testid={`text-qty-${item.id}-${priceOption.pieces}`}>
-                                {getItemQuantity(item.id, priceOption.pieces)}
-                              </span>
-                            </>
-                          )}
-                          <Button
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => addToOrder(item, priceOption.pieces)}
-                            data-testid={`button-add-${item.id}-${priceOption.pieces}`}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </CardContent>
