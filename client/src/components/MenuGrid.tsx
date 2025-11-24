@@ -198,10 +198,16 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
     const newOrder = new Map(order);
     const existing = newOrder.get(key);
 
-    if (existing && existing.quantity > 1) {
-      newOrder.set(key, { ...existing, quantity: existing.quantity - 1 });
-    } else {
+    if (!existing) {
+      return; // Item not in cart, nothing to do
+    }
+
+    // If quantity is 1 or less, delete item completely
+    if (existing.quantity <= 1) {
       newOrder.delete(key);
+    } else {
+      // Otherwise decrement quantity by 1
+      newOrder.set(key, { ...existing, quantity: existing.quantity - 1 });
     }
 
     setOrder(newOrder);
