@@ -175,30 +175,28 @@ interface OrderItem {
   quantity: number;
 }
 
-export default function MenuGrid({ onOrderUpdate, cartItems = [] }: { onOrderUpdate?: (items: OrderItem[]) => void; cartItems?: any[] }) {
+export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
   const [menuOrder, setMenuOrder] = useState<Map<string, OrderItem>>(new Map());
 
   const toggleItem = (item: MenuItem, pieces: number) => {
-    setMenuOrder((prevOrder) => {
-      const key = `${item.id}-${pieces}`;
-      const newOrder = new Map(prevOrder);
-      const existing = newOrder.get(key);
+    const key = `${item.id}-${pieces}`;
+    const newOrder = new Map(menuOrder);
+    const existing = newOrder.get(key);
 
-      if (existing) {
-        newOrder.delete(key);
-      } else {
-        newOrder.set(key, { item, pieces, quantity: 1 });
-      }
+    if (existing) {
+      // If already selected, deselect it
+      newOrder.delete(key);
+    } else {
+      // If not selected, add it
+      newOrder.set(key, { item, pieces, quantity: 1 });
+    }
 
-      onOrderUpdate?.(Array.from(newOrder.values()));
-      return newOrder;
-    });
+    setMenuOrder(newOrder);
+    onOrderUpdate?.(Array.from(newOrder.values()));
   };
 
   const isItemSelected = (itemId: string, pieces: number) => {
-    const key = `${itemId}-${pieces}`;
-    // Check if item is in the menu order state or in the parent's cart
-    return menuOrder.has(key) || cartItems.some(item => item.item.id === itemId && item.pieces === pieces);
+    return menuOrder.has(`${itemId}-${pieces}`);
   };
 
   return (

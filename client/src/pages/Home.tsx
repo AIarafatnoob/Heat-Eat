@@ -83,7 +83,7 @@ export default function Home() {
       <HeroSection />
       <QuickSelectCarousel onOrderUpdate={handleQuickSelectUpdate} />
       <NutritionBar items={quickSelectItems} />
-      <MenuGrid onOrderUpdate={handleMenuUpdate} cartItems={orderItems} />
+      <MenuGrid onOrderUpdate={handleMenuUpdate} />
       <ContactSection />
       <Footer />
       <OrderFloatingButton items={orderItems} onClearCart={handleClearCart} onRemoveItem={handleRemoveItem} onUpdateQuantity={handleUpdateQuantity} />
