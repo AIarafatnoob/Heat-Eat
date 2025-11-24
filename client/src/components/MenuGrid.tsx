@@ -179,39 +179,43 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
   const [order, setOrder] = useState<Map<string, OrderItem>>(new Map());
 
   const addToOrder = (item: MenuItem, pieces: number) => {
-    const key = `${item.id}-${pieces}`;
-    const newOrder = new Map(order);
-    const existing = newOrder.get(key);
+    setOrder((prevOrder) => {
+      const key = `${item.id}-${pieces}`;
+      const newOrder = new Map(prevOrder);
+      const existing = newOrder.get(key);
 
-    if (existing) {
-      newOrder.set(key, { ...existing, quantity: existing.quantity + 1 });
-    } else {
-      newOrder.set(key, { item, pieces, quantity: 1 });
-    }
+      if (existing) {
+        newOrder.set(key, { ...existing, quantity: existing.quantity + 1 });
+      } else {
+        newOrder.set(key, { item, pieces, quantity: 1 });
+      }
 
-    setOrder(newOrder);
-    onOrderUpdate?.(Array.from(newOrder.values()));
+      onOrderUpdate?.(Array.from(newOrder.values()));
+      return newOrder;
+    });
   };
 
   const removeFromOrder = (item: MenuItem, pieces: number) => {
-    const key = `${item.id}-${pieces}`;
-    const newOrder = new Map(order);
-    const existing = newOrder.get(key);
+    setOrder((prevOrder) => {
+      const key = `${item.id}-${pieces}`;
+      const newOrder = new Map(prevOrder);
+      const existing = newOrder.get(key);
 
-    if (!existing) {
-      return; // Item not in cart, nothing to do
-    }
+      if (!existing) {
+        return prevOrder; // Item not in cart, nothing to do
+      }
 
-    // If quantity is 1 or less, delete item completely
-    if (existing.quantity <= 1) {
-      newOrder.delete(key);
-    } else {
-      // Otherwise decrement quantity by 1
-      newOrder.set(key, { ...existing, quantity: existing.quantity - 1 });
-    }
+      // If quantity is 1 or less, delete item completely
+      if (existing.quantity <= 1) {
+        newOrder.delete(key);
+      } else {
+        // Otherwise decrement quantity by 1
+        newOrder.set(key, { ...existing, quantity: existing.quantity - 1 });
+      }
 
-    setOrder(newOrder);
-    onOrderUpdate?.(Array.from(newOrder.values()));
+      onOrderUpdate?.(Array.from(newOrder.values()));
+      return newOrder;
+    });
   };
 
   const getItemQuantity = (itemId: string, pieces: number) => {
