@@ -9,17 +9,17 @@ export default function HeroSection() {
     {
       name: 'Sarah Ahmed',
       rating: 5,
-      comment: 'Best home-cooked meals! Tastes just like my grandma used to make.',
+      comment: 'Love the convenience! Quality frozen food that tastes amazing.',
     },
     {
       name: 'Karim Hassan',
       rating: 5,
-      comment: 'Fresh, delicious, and delivered on time. Highly recommend!',
+      comment: 'So fresh and easy to prepare. My freezer is always stocked!',
     },
     {
       name: 'Nadia Khan',
       rating: 5,
-      comment: 'The chicken tikka kabab is absolutely amazing. Will order again!',
+      comment: 'The chicken tikka kabab is perfectly seasoned. Best frozen food ever!',
     },
   ];
 
@@ -39,13 +39,12 @@ export default function HeroSection() {
           className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
           data-testid="text-hero-title"
         >
-          Crafted with Care,
+          Premium Frozen Foods,
           <br />
-          Served with Heart
+          Ready When You Are
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto" data-testid="text-hero-subtitle">
-          Experience the warmth of home-cooked meals delivered fresh to your door. Authentic flavors, quality
-          ingredients, made with love.
+          Flash-frozen to lock in freshness and flavor. Heat and eat delicious, restaurant-quality meals at home in minutes.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">

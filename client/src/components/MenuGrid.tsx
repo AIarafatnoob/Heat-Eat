@@ -199,10 +199,10 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-menu-title">
-            Our Complete Menu
+            Our Complete Frozen Menu
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Explore our full selection of home-cooked delights
+            Premium frozen food items, flash-frozen for maximum freshness and flavor
           </p>
         </div>
 

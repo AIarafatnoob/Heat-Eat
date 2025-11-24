@@ -25,12 +25,36 @@ interface OrderItem {
 export default function Home() {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
+  const handleQuickSelectUpdate = (quickItems: OrderItem[]) => {
+    setOrderItems(prevItems => {
+      // Merge quick select items with existing menu items
+      const menuItems = prevItems.filter(item => {
+        const itemId = parseInt(item.item.id);
+        return itemId > 4; // Menu items have IDs > 4
+      });
+      
+      return [...quickItems, ...menuItems];
+    });
+  };
+
+  const handleMenuUpdate = (menuItems: OrderItem[]) => {
+    setOrderItems(prevItems => {
+      // Merge menu items with existing quick select items
+      const quickItems = prevItems.filter(item => {
+        const itemId = parseInt(item.item.id);
+        return itemId <= 4; // Quick select items have IDs 1-4
+      });
+      
+      return [...quickItems, ...menuItems];
+    });
+  };
+
   return (
     <div className="min-h-screen">
       <Navigation />
       <HeroSection />
-      <QuickSelectCarousel />
-      <MenuGrid onOrderUpdate={setOrderItems} />
+      <QuickSelectCarousel onOrderUpdate={handleQuickSelectUpdate} />
+      <MenuGrid onOrderUpdate={handleMenuUpdate} />
       <ContactSection />
       <Footer />
       <OrderFloatingButton items={orderItems} />

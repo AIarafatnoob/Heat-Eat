@@ -12,7 +12,7 @@ export default function ContactSection() {
             Get in Touch
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Have questions? We're here to help! Reach out via WhatsApp or give us a call.
+            Questions about our frozen items? We're here to help! Reach out via WhatsApp or give us a call.
           </p>
         </div>
 

@@ -26,18 +26,9 @@ export default function Navigation() {
     }
   };
 
-  const menuItems = [
-    { label: 'Home', id: 'hero' },
-    { label: 'Quick Select', id: 'quick-select' },
-    { label: 'Full Menu', id: 'menu' },
-    { label: 'Contact', id: 'contact' },
-  ];
-
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-background/95 backdrop-blur-md shadow-md' : 'bg-background/80 backdrop-blur-sm'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent"
       data-testid="navigation-main"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
@@ -47,19 +38,6 @@ export default function Navigation() {
             data-testid="logo-container"
           >
             <img src={logoImage} alt="Heat & Eat Logo" className="h-full w-auto" />
-          </div>
-
-          <div className="hidden md:flex items-center gap-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-sm font-medium text-foreground hover-elevate active-elevate-2 px-3 py-2 rounded-lg transition-colors"
-                data-testid={`nav-link-${item.id}`}
-              >
-                {item.label}
-              </button>
-            ))}
           </div>
 
           <div className="hidden md:flex items-center gap-4">
@@ -92,17 +70,7 @@ export default function Navigation() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col gap-6 mt-8">
-                {menuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className="text-lg font-medium text-foreground text-left px-4 py-3 rounded-lg hover-elevate active-elevate-2"
-                    data-testid={`nav-mobile-${item.id}`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-                <div className="flex flex-col gap-3 mt-4 px-4">
+                <div className="flex flex-col gap-3 px-4">
                   <Button
                     variant="outline"
                     className="gap-2 w-full"

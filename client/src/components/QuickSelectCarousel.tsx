@@ -68,7 +68,13 @@ const quickItems: MenuItem[] = [
   },
 ];
 
-export default function QuickSelectCarousel() {
+interface OrderItem {
+  item: MenuItem;
+  size: 'regular' | 'large';
+  quantity: number;
+}
+
+export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
   const [selections, setSelections] = useState<Map<string, 'regular' | 'large'>>(new Map());
 
   const toggleSelection = (id: string, size: 'regular' | 'large') => {
@@ -79,6 +85,18 @@ export default function QuickSelectCarousel() {
       newSelections.set(id, size);
     }
     setSelections(newSelections);
+    
+    // Convert selections to order items format
+    const orderItems: OrderItem[] = Array.from(newSelections.entries()).map(([itemId, selectedSize]) => {
+      const item = quickItems.find(i => i.id === itemId)!;
+      return {
+        item,
+        size: selectedSize,
+        quantity: 1,
+      };
+    });
+    
+    onOrderUpdate?.(orderItems);
   };
 
   const calculateTotals = () => {
@@ -106,7 +124,7 @@ export default function QuickSelectCarousel() {
             Quick Select Favorites
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose your favorites and see nutritional information in real-time
+            Flash-frozen premium items ready to heat and eat. Select your favorites!
           </p>
         </div>
 

@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Heat & Eat</h3>
             <p className="text-muted-foreground text-sm mb-4">
-              Crafted with Care, Served with Heart. Your trusted source for delicious home-cooked meals.
+              Premium frozen foods delivered fresh. Flash-frozen to lock in flavor and nutrition.
             </p>
             <div className="flex gap-3">
               <button
