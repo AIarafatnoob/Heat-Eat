@@ -289,7 +289,18 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
                             <Button
                               size="icon"
                               className={`h-7 w-7 ${isSelected ? '' : ''}`}
-                              onClick={() => addToOrder(item, priceOption.pieces)}
+                              onClick={() => {
+                                if (isSelected) {
+                                  // Remove all quantity of this item when clicking check
+                                  const key = `${item.id}-${priceOption.pieces}`;
+                                  const newOrder = new Map(order);
+                                  newOrder.delete(key);
+                                  setOrder(newOrder);
+                                  onOrderUpdate?.(Array.from(newOrder.values()));
+                                } else {
+                                  addToOrder(item, priceOption.pieces);
+                                }
+                              }}
                               data-testid={`button-add-${item.id}-${priceOption.pieces}`}
                             >
                               {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
