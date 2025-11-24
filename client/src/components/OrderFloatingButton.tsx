@@ -68,7 +68,7 @@ export default function OrderFloatingButton({ items, onClearCart }: { items: Ord
     message += `• Fats: ${Math.round(totalNutrition.fats)}g`;
 
     const encoded = encodeURIComponent(message);
-    window.open(`https://wa.me/881936135709?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/8801936135709?text=${encoded}`, '_blank');
     setOpen(false);
   };
 

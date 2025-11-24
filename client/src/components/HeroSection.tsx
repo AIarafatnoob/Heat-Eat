@@ -59,7 +59,7 @@ export default function HeroSection() {
           <Button
             size="lg"
             className="gap-2 text-lg bg-secondary hover:bg-secondary/90"
-            onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+            onClick={() => window.open('https://wa.me/8801936135709', '_blank')}
             data-testid="button-order-whatsapp"
           >
             <SiWhatsapp className="h-5 w-5" />

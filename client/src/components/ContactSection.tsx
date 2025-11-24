@@ -25,11 +25,11 @@ export default function ContactSection() {
               <h3 className="font-semibold text-lg mb-2">Phone</h3>
               <p className="text-muted-foreground mb-3">Call us directly</p>
               <a
-                href="tel:+881936135709"
+                href="tel:+8801936135709"
                 className="text-primary font-medium hover:underline"
                 data-testid="link-phone"
               >
-                +88 1936-135709
+                +880 1936-135709
               </a>
             </CardContent>
           </Card>
@@ -67,7 +67,7 @@ export default function ContactSection() {
           <Button
             size="lg"
             className="gap-2 bg-secondary hover:bg-secondary/90"
-            onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+            onClick={() => window.open('https://wa.me/8801936135709', '_blank')}
             data-testid="button-whatsapp-contact"
           >
             <SiWhatsapp className="h-5 w-5" />

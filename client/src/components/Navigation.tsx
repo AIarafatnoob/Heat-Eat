@@ -29,7 +29,7 @@ export default function Navigation() {
             <Button
               size="icon"
               className="gap-2 bg-accent hover:bg-accent/90"
-              onClick={() => window.open('tel:+881936135709', '_blank')}
+              onClick={() => window.open('tel:+8801936135709', '_blank')}
               data-testid="button-call"
             >
               <Phone className="h-4 w-4" />
@@ -37,7 +37,7 @@ export default function Navigation() {
             <Button
               size="icon"
               className="gap-2 bg-secondary hover:bg-secondary/90"
-              onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+              onClick={() => window.open('https://wa.me/8801936135709', '_blank')}
               data-testid="button-whatsapp-nav"
             >
               <SiWhatsapp className="h-4 w-4" />
@@ -56,7 +56,7 @@ export default function Navigation() {
             <Button
               size="icon"
               className="gap-2 bg-accent hover:bg-accent/90"
-              onClick={() => window.open('tel:+881936135709', '_blank')}
+              onClick={() => window.open('tel:+8801936135709', '_blank')}
               data-testid="button-call-mobile"
             >
               <Phone className="h-4 w-4" />
@@ -64,7 +64,7 @@ export default function Navigation() {
             <Button
               size="icon"
               className="gap-2 bg-secondary hover:bg-secondary/90"
-              onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+              onClick={() => window.open('https://wa.me/8801936135709', '_blank')}
               data-testid="button-whatsapp-mobile"
             >
               <SiWhatsapp className="h-4 w-4" />

@@ -12,7 +12,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <button
-                onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+                onClick={() => window.open('https://wa.me/8801936135709', '_blank')}
                 className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-secondary/10 hover-elevate active-elevate-2"
                 data-testid="button-social-whatsapp"
               >
@@ -81,7 +81,7 @@ export default function Footer() {
             <h3 className="font-bold text-lg mb-4">Contact Info</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li data-testid="text-footer-phone">
-                Phone: <a href="tel:+881936135709" className="hover:text-foreground">+88 1936-135709</a>
+                Phone: <a href="tel:+8801936135709" className="hover:text-foreground">+880 1936-135709</a>
               </li>
               <li data-testid="text-footer-email">
                 Email: <a href="mailto:heatandeat123@gmail.com" className="hover:text-foreground">heatandeat123@gmail.com</a>
