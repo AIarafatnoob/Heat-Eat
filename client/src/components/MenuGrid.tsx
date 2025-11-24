@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Check } from 'lucide-react';
 import frenchFriesImg from '@assets/generated_images/french_fries_product_photo.png';
 import chickenNuggetsImg from '@assets/generated_images/chicken_nuggets_product_photo.png';
 import chickenRollImg from '@assets/generated_images/chicken_roll_product_photo.png';
@@ -178,14 +178,14 @@ interface OrderItem {
 export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
   const [order, setOrder] = useState<Map<string, OrderItem>>(new Map());
 
-  const addToOrder = (item: MenuItem, pieces: number) => {
+  const toggleItem = (item: MenuItem, pieces: number) => {
     setOrder((prevOrder) => {
       const key = `${item.id}-${pieces}`;
       const newOrder = new Map(prevOrder);
       const existing = newOrder.get(key);
 
       if (existing) {
-        newOrder.set(key, { ...existing, quantity: existing.quantity + 1 });
+        newOrder.delete(key);
       } else {
         newOrder.set(key, { item, pieces, quantity: 1 });
       }
@@ -195,32 +195,9 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
     });
   };
 
-  const removeFromOrder = (item: MenuItem, pieces: number) => {
-    setOrder((prevOrder) => {
-      const key = `${item.id}-${pieces}`;
-      const newOrder = new Map(prevOrder);
-      const existing = newOrder.get(key);
-
-      if (!existing) {
-        return prevOrder; // Item not in cart, nothing to do
-      }
-
-      // If quantity is 1 or less, delete item completely
-      if (existing.quantity <= 1) {
-        newOrder.delete(key);
-      } else {
-        // Otherwise decrement quantity by 1
-        newOrder.set(key, { ...existing, quantity: existing.quantity - 1 });
-      }
-
-      onOrderUpdate?.(Array.from(newOrder.values()));
-      return newOrder;
-    });
-  };
-
-  const getItemQuantity = (itemId: string, pieces: number) => {
+  const isItemSelected = (itemId: string, pieces: number) => {
     const key = `${itemId}-${pieces}`;
-    return order.get(key)?.quantity || 0;
+    return order.has(key);
   };
 
   return (
@@ -265,43 +242,22 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
 
                   <div className="space-y-2">
                     {item.prices.map((priceOption) => {
-                      const qty = getItemQuantity(item.id, priceOption.pieces);
+                      const isSelected = isItemSelected(item.id, priceOption.pieces);
 
                       return (
-                        <div
+                        <Button
                           key={`${item.id}-${priceOption.pieces}`}
-                          className={`flex items-center justify-between gap-3 p-3 rounded-lg transition-all ${
-                            qty > 0 ? 'bg-primary/10 border border-primary' : 'bg-muted/50 border border-transparent hover:bg-muted'
-                          }`}
+                          variant={isSelected ? 'default' : 'outline'}
+                          className="w-full text-sm flex items-center justify-between gap-2 transition-all"
+                          onClick={() => toggleItem(item, priceOption.pieces)}
+                          data-testid={`button-add-${item.id}-${priceOption.pieces}`}
                         >
-                          <div className="text-sm flex-1">
-                            <p className={`${qty > 0 ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
-                              {priceOption.label}
-                            </p>
-                            <p className="font-semibold">৳{priceOption.price}</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-7 w-7"
-                              onClick={() => removeFromOrder(item, priceOption.pieces)}
-                              disabled={qty === 0}
-                              data-testid={`button-decrease-${item.id}-${priceOption.pieces}`}
-                            >
-                              <Minus className="h-3 w-3" />
-                            </Button>
-                            <span className="w-6 text-center font-semibold text-sm">{qty}</span>
-                            <Button
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => addToOrder(item, priceOption.pieces)}
-                              data-testid={`button-increase-${item.id}-${priceOption.pieces}`}
-                            >
-                              <Plus className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
+                          <span className="flex items-center gap-2">
+                            {isSelected && <Check className="h-4 w-4" />}
+                            {priceOption.label}
+                          </span>
+                          <span className="font-bold">৳{priceOption.price}</span>
+                        </Button>
                       );
                     })}
                   </div>
