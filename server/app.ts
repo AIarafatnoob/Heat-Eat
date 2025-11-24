@@ -86,10 +86,19 @@ export default async function runApp(
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
+  // On Windows, the SO_REUSEPORT socket option is not supported, which causes
+  // Node to throw ENOTSUP (operation not supported) when attempting to bind.
+  // Only set `reusePort: true` on non-Windows platforms where it's supported
+  // (e.g. most Unix-like systems). Allow overriding this behavior with the
+  // REUSE_PORT environment variable when needed.
+  const isWindows = process.platform === "win32";
+  const reusePortEnv = (process.env.REUSE_PORT || "true").toLowerCase();
+  const reusePort = !isWindows && reusePortEnv !== "false";
+
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
+    reusePort,
   }, () => {
     log(`serving on port ${port}`);
   });
