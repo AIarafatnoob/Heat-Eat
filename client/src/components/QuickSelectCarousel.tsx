@@ -83,14 +83,16 @@ interface OrderItem {
 export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
   const [cart, setCart] = useState<Map<string, OrderItem>>(new Map());
 
-  const addToCart = (item: MenuItem, pieces: number) => {
+  const toggleCart = (item: MenuItem, pieces: number) => {
     const key = `${item.id}-${pieces}`;
     const newCart = new Map(cart);
     const existing = newCart.get(key);
 
     if (existing) {
-      newCart.set(key, { ...existing, quantity: existing.quantity + 1 });
+      // If already selected, deselect it
+      newCart.delete(key);
     } else {
+      // If not selected, add it
       newCart.set(key, { item, pieces, quantity: 1 });
     }
 
@@ -146,7 +148,7 @@ export default function QuickSelectCarousel({ onOrderUpdate }: { onOrderUpdate?:
                             className={`w-full text-xs flex items-center justify-between gap-1 transition-all ${
                               selected ? 'ring-2 ring-primary' : ''
                             }`}
-                            onClick={() => addToCart(item, priceOption.pieces)}
+                            onClick={() => toggleCart(item, priceOption.pieces)}
                             data-testid={`button-add-${item.id}-${priceOption.pieces}`}
                           >
                             <span className="flex items-center gap-1">

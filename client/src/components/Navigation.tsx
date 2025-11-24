@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Phone } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
-import logoImage from '@assets/image_1764011036750.png';
+import logoImage from '@assets/image-removebg-preview_1764013789708.png';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -11,7 +11,7 @@ export default function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 100);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -27,73 +27,84 @@ export default function Navigation() {
   };
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent"
-      data-testid="navigation-main"
-    >
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <div
-            className={`flex items-center transition-all duration-300 ${scrolled ? 'h-10' : 'h-12'}`}
-            data-testid="logo-container"
-          >
-            <img src={logoImage} alt="Heat & Eat Logo" className="h-full w-auto" />
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => window.open('tel:+881936135709', '_blank')}
-              data-testid="button-call"
-            >
-              <Phone className="h-4 w-4" />
-              Call Us
-            </Button>
-            <Button
-              size="sm"
-              className="gap-2 bg-secondary hover:bg-secondary/90"
-              onClick={() => window.open('https://wa.me/881936135709', '_blank')}
-              data-testid="button-whatsapp-nav"
-            >
-              <SiWhatsapp className="h-4 w-4" />
-              Order Now
-            </Button>
-          </div>
-
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" data-testid="button-menu-toggle">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
-              <div className="flex flex-col gap-6 mt-8">
-                <div className="flex flex-col gap-3 px-4">
-                  <Button
-                    variant="outline"
-                    className="gap-2 w-full"
-                    onClick={() => window.open('tel:+881936135709', '_blank')}
-                    data-testid="button-call-mobile"
-                  >
-                    <Phone className="h-4 w-4" />
-                    Call Us
-                  </Button>
-                  <Button
-                    className="gap-2 w-full bg-secondary hover:bg-secondary/90"
-                    onClick={() => window.open('https://wa.me/881936135709', '_blank')}
-                    data-testid="button-whatsapp-mobile"
-                  >
-                    <SiWhatsapp className="h-4 w-4" />
-                    Order Now
-                  </Button>
-                </div>
+    <>
+      {/* Fixed navbar */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          scrolled ? 'bg-background/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
+        }`}
+        data-testid="navigation-main"
+      >
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo - appears in navbar when scrolled */}
+            {scrolled && (
+              <div className="flex items-center h-10 transition-all duration-300" data-testid="logo-container-navbar">
+                <img src={logoImage} alt="Heat & Eat Logo" className="h-full w-auto" />
               </div>
-            </SheetContent>
-          </Sheet>
+            )}
+            {!scrolled && <div className="flex-1" />}
+
+            {/* Desktop buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              <Button
+                size="icon"
+                className="gap-2 bg-accent hover:bg-accent/90"
+                onClick={() => window.open('tel:+881936135709', '_blank')}
+                data-testid="button-call"
+              >
+                <Phone className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                className="gap-2 bg-secondary hover:bg-secondary/90"
+                onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+                data-testid="button-whatsapp-nav"
+              >
+                <SiWhatsapp className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Mobile menu */}
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon" data-testid="button-menu-toggle">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px]">
+                <div className="flex flex-col gap-6 mt-8">
+                  <div className="flex flex-col gap-3 px-4">
+                    <Button
+                      className="gap-2 w-full bg-accent hover:bg-accent/90"
+                      onClick={() => window.open('tel:+881936135709', '_blank')}
+                      data-testid="button-call-mobile"
+                    >
+                      <Phone className="h-4 w-4" />
+                      Call Us
+                    </Button>
+                    <Button
+                      className="gap-2 w-full bg-secondary hover:bg-secondary/90"
+                      onClick={() => window.open('https://wa.me/881936135709', '_blank')}
+                      data-testid="button-whatsapp-mobile"
+                    >
+                      <SiWhatsapp className="h-4 w-4" />
+                      Order Now
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Centered logo at top of hero */}
+      {!scrolled && (
+        <div className="fixed top-6 left-0 right-0 z-30 flex justify-center transition-all duration-300 pt-4" data-testid="logo-container-hero">
+          <img src={logoImage} alt="Heat & Eat Logo" className="h-20 w-auto" />
+        </div>
+      )}
+    </>
   );
 }
