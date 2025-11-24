@@ -17,11 +17,11 @@ export default function Logo() {
     <div
       className="fixed z-30 transition-all duration-300"
       style={{
-        top: scrolled ? '1rem' : '6rem',
+        top: scrolled ? '0.75rem' : '2.5rem',
         left: scrolled ? '1.5rem' : '50%',
         transform: scrolled ? 'translateX(0)' : 'translateX(-50%)',
-        width: scrolled ? '40px' : '80px',
-        height: scrolled ? '40px' : '80px',
+        width: scrolled ? '50px' : '120px',
+        height: scrolled ? '50px' : '120px',
       }}
       data-testid="logo-container"
     >
