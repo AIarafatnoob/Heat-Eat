@@ -175,11 +175,11 @@ interface OrderItem {
   quantity: number;
 }
 
-export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: OrderItem[]) => void }) {
-  const [order, setOrder] = useState<Map<string, OrderItem>>(new Map());
+export default function MenuGrid({ onOrderUpdate, cartItems = [] }: { onOrderUpdate?: (items: OrderItem[]) => void; cartItems?: any[] }) {
+  const [menuOrder, setMenuOrder] = useState<Map<string, OrderItem>>(new Map());
 
   const toggleItem = (item: MenuItem, pieces: number) => {
-    setOrder((prevOrder) => {
+    setMenuOrder((prevOrder) => {
       const key = `${item.id}-${pieces}`;
       const newOrder = new Map(prevOrder);
       const existing = newOrder.get(key);
@@ -197,7 +197,8 @@ export default function MenuGrid({ onOrderUpdate }: { onOrderUpdate?: (items: Or
 
   const isItemSelected = (itemId: string, pieces: number) => {
     const key = `${itemId}-${pieces}`;
-    return order.has(key);
+    // Check if item is in the menu order state or in the parent's cart
+    return menuOrder.has(key) || cartItems.some(item => item.item.id === itemId && item.pieces === pieces);
   };
 
   return (
